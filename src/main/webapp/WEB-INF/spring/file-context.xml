@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!--자료실 파일 업로드 설정 (여러가지 자료형을 한번에 쏘기) -->
+<bean id="multipartResolver"
+	class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	<!-- 업로드 파일 최대크기 -->
+	<property name="maxUploadSize" value="104857600"/>
+	<!-- 업로드 파일 1kb -->
+	<property name="maxInMemorySize" value="102400"/>
+	<!-- 업로드 파일 utf-8사용 설정 -->
+	<property name="defaultEncoding" value="utf-8"/>
+	<!-- 업로드 파일 폴더 넣고 webapp위치에 upload파일 만들기 -->
+	<property name="uploadTempDir" value="upload"/>
+	</bean>
+	
+<!--자료실 파일 다운로드 설정  -->
+<bean id="DownloadView" class="mul.cam.a.util.DownloadView"></bean>
+		<!-- 인스턴스
+			창을 띄우는 부분 -->
+<bean id="DownloadViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+	<property name="order">
+		<value>0</value>
+	</property>
+</bean>		
+</beans>

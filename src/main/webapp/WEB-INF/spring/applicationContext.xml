@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- DB 설정파일 -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+		
+<!-- DB 설정파일로딩 -->		
+<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<property name="locations">
+		<list>					<!-- properties패키지 안에 파일 불러오기 -->
+			<value>classpath:properties/jdbc.properties</value>
+		</list>
+	</property>
+</bean>		
+		<!-- DBMS(DataBase Management System) 설정-->
+		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+			<property name="driverClassName" value="${jdbc.driverClassName}"/>
+			<property name="url" value="${jdbc.url}"/>
+			<property name="username" value="${jdbc.username}"/>
+			<property name="password" value="${jdbc.password}"/>
+			<property name="initialSize" value="${jdbc.initialSize}"/>
+			<property name="maxActive" value="${jdbc.maxActive}"/>
+			<property name="minIdle" value="${jdbc.initialSize}"/>  <!-- 최소사이즈로 초기값 -->
+			<property name="maxWait" value="3000"/>  <!-- 서버 대기 응답시간이 3초 -->
+			<property name="poolPreparedStatements" value="true"/>
+			<property name="maxOpenPreparedStatements" value="50"/> <!-- 동시접속할때 가져갈 수 있는 데이터  -->
+		</bean>
+		
+		<!-- mybtis 설정 -->
+		<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+						<!--내부적인 요소          외부적인 요소 -->				
+			<property name="dataSource" ref="dataSource"/>
+			<property name="mapperLocations" value="classpath:sqls/*.xml"/> <!-- *.xml모든 파일을 mapperLocations로 인식 -->
+		</bean>
+		
+		<!-- sqlSession 취득 -->
+		<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+			<constructor-arg index="0" ref="sqlSessionFactory" /><!--생성자의 실제값  -->
+			<constructor-arg index="1" value="SIMPLE" />
+		</bean>
+		<!-- 	jdbc설정 -->
+		<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+			<property name="dataSource" ref="dataSource"/>
+		</bean>
+		
+</beans>
